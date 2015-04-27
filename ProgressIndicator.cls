@@ -28,6 +28,7 @@ Private Type TProgressIndicator
     procedure As String
     instance As Object
     sleepDelay As Long
+    canCancel As Boolean
     currentProgressValue As Double
 End Type
 
@@ -52,10 +53,11 @@ Private Function QualifyMacroName(ByVal book As Workbook, ByVal procedure As Str
     QualifyMacroName = "'" & book.FullName & "'!" & procedure
 End Function
 
-Public Function Create(ByVal procedure As String, Optional instance As Object = Nothing, Optional ByVal initialLabelValue As String, Optional ByVal initialCaptionValue As String, Optional ByVal completedSleepMilliseconds As Long = 1000) As ProgressIndicator
+Public Function Create(ByVal procedure As String, Optional instance As Object = Nothing, Optional ByVal initialLabelValue As String, Optional ByVal initialCaptionValue As String, Optional ByVal completedSleepMilliseconds As Long = 1000, Optional canCancel As Boolean = False) As ProgressIndicator
     
     Dim result As New ProgressIndicator
     
+    result.Cancellable = canCancel
     result.SleepMilliseconds = completedSleepMilliseconds
     
     If Not instance Is Nothing Then
@@ -108,6 +110,14 @@ End Property
 
 Public Property Get CurrentProgress() As Double
     CurrentProgress = this.currentProgressValue
+End Property
+
+Public Property Get Cancellable() As Boolean
+    Cancellable = this.canCancel
+End Property
+
+Friend Property Let Cancellable(ByVal value As Boolean)
+    this.canCancel = value
 End Property
 
 Public Sub Execute()
@@ -188,7 +198,7 @@ End Sub
 
 Private Sub ExecuteInstanceMethod()
     On Error GoTo CleanFail
-
+    
     Dim parameter As ProgressIndicator
     Set parameter = Me 'Me cannot be passed to CallByName directly
 
@@ -207,6 +217,8 @@ CleanFail:
 End Sub
 
 Private Sub view_Cancelled()
+    
+    If Not this.canCancel Then Exit Sub
     
     Dim throw As Boolean
     throw = True
