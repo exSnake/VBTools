@@ -175,11 +175,14 @@ Public Function ToStringParameter(ByVal value As Variant, ByVal direction As ADO
         End If
     End If
     
+    Dim stringLength As Long
+    stringLength = Len(stringValue)
+    
     Dim result As New ADODB.Parameter
     With result
         .Type = mappings.StringMap
         .direction = direction
-        .Size = Len(stringValue)
+        .Size = IIf(stringLength = 0, 1, stringLength)
         .value = stringValue
     End With
     

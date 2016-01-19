@@ -8,6 +8,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = True
 Private PADDING_CHAR As String
+Private escapes As New Collection
 Option Explicit
 
 Public Function Format(format_string As String, ParamArray Values()) As String
@@ -126,12 +127,13 @@ NumberFormatSpecifiers:
                     '(hard-coded group separator, decimal separator and currency sign).
                     
                     precisionSpecifier = CInt(precisionString)
-                    thisFormat = "#,##0.$"
+                    thisFormat = "#,##0.00$"
                     
                     If LenB(formatGroup) > 2 And precisionSpecifier > 0 Then
                         'if a non-zero precision is specified...
-                        thisFormat = _
-                        Replace$(thisFormat, ".", "." & String$(precisionString, Chr$(48)))
+                        thisFormat = Replace$(thisFormat, ".00", "." & String$(precisionString, Chr$(48)))
+                    ElseIf LenB(formatGroup) > 2 And precisionSpecifier = 0 Then
+                        thisFormat = Replace$(thisFormat, ".00", vbNullString)
                     End If
                     
                     
@@ -333,7 +335,7 @@ DateTimeFormatSpecifiers:
             
 ApplyStringFormat:
             'apply computed format string:
-            formattedValue = Format(v, thisFormat)
+            formattedValue = VBA.Strings.Format(v, thisFormat)
             
             
 AlignFormattedValue:
@@ -367,20 +369,12 @@ AlignFormattedValue:
 checkEscapes:
         'if there's no more backslashes, don't bother checking for the rest:
         If Not Strings.Contains(return_value, "\") Then GoTo normalExit
-    
-        Dim escapes As New Collection
-        escapes.Add "\n", "0"
-        escapes.Add "\q", "1"
-        escapes.Add "\t", "2"
-        escapes.Add "\a", "3"
-        escapes.Add "\b", "4"
-        escapes.Add "\v", "5"
-        escapes.Add "\f", "6"
-        escapes.Add "\r", "7"
-    
+        
+        Dim escape As EscapeSequence
         For i = 0 To escapes.Count - 1
-            If Strings.Contains(return_value, escapes(CStr(i))) Then _
-                return_value = Replace(return_value, escapes(CStr(i)), vbNewLine)
+            Set escape = escapes(CStr(i))
+            If Strings.Contains(return_value, escape.EscapeString) Then _
+                return_value = Replace(return_value, escape.EscapeString, escape.ReplacementString)
         
             If Not Strings.Contains(return_value, "\") Then _
                 GoTo normalExit
@@ -425,9 +419,8 @@ checkEscapes:
         End If
 
 normalExit:
-Set escapes = Nothing
-If Strings.Contains(return_value, Chr$(27)) Then return_value = Replace(return_value, Chr$(27), "\")
-Format = return_value
+    If Strings.Contains(return_value, Chr$(27)) Then return_value = Replace(return_value, Chr$(27), "\")
+    Format = return_value
    
 End Function
 
@@ -553,5 +546,15 @@ Public Function EndsWithAny(ByVal string_source As String, ByVal caseSensitive A
     
 End Function
 
-
-
+Private Sub Class_Initialize()
+    Dim factory As New EscapeSequence
+    escapes.Add factory.Create("\n", vbNewLine), "0"
+    escapes.Add factory.Create("\q", Chr$(34)), "1"
+    escapes.Add factory.Create("\t", vbTab), "2"
+    escapes.Add factory.Create("\a", Chr$(7)), "3"
+    escapes.Add factory.Create("\b", Chr$(8)), "4"
+    escapes.Add factory.Create("\v", Chr$(13)), "5"
+    escapes.Add factory.Create("\f", Chr$(14)), "6"
+    escapes.Add factory.Create("\r", Chr$(15)), "7"
+    Set factory = Nothing
+End Sub
