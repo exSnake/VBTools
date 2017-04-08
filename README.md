@@ -3,6 +3,12 @@ A handful class modules for VB6/VBA
 
 This stuff is already all over http://www.codereview.stackexchange.com, and as such is licensed under CC-by-SA as all Stack Exchange content is.
 
+Remember to import VBA References to:
+* Microsoft ActiveX Data Objects 6.1 Library (msado15.dll ADODB Class)
+* Microsoft VBSCripet Regular Expression 5.5 (vbscript.dll\3 RegEx Class)
+* Microsoft Scripting Runtime (scrrun.dll Dictionary Class)
+* OLE Automation (stdole2.tlb - IUnknown Interface)
+
 Enjoy!
 
 ---
@@ -26,4 +32,6 @@ This class is essentially a *generic DTO* that `SqlResult` uses to "materialize"
 ###UnitOfWork
 
 This class maintains a dictionary of `IRepository` implementations and initiates a database transaction when instantiated. The `Dispose` method rolls back any uncommitted changes, before closing the connection - this method is called automatically when the instance is terminated. Calling the `Commit` method commits the open transaction, and initiates a new one; calling the `Rollback` method rolls back the open transaction, and initiates a new one.
+
+
 
