@@ -47,7 +47,7 @@ Public Function Format(format_string As String, ParamArray Values()) As String
         Dim uniqueCount As Integer
         Dim tmpCSV As String
         For Each thisMatch In matches
-            If Not Strings.Contains(tmpCSV, thisMatch.SubMatches(1)) Then
+            If Not StringType.Contains(tmpCSV, thisMatch.SubMatches(1)) Then
                 uniqueCount = uniqueCount + 1
                 tmpCSV = tmpCSV & thisMatch.SubMatches(1) & ","
             End If
@@ -55,9 +55,9 @@ Public Function Format(format_string As String, ParamArray Values()) As String
         
         'unique indices count must match values_count:
         If matches.Count > 0 And uniqueCount <> values_count Then _
-            Error.RaiseInvalidFormatError ERR_SOURCE, "Unique indices mismatch values count."
+            Err.Raise ERR_SOURCE, "Unique indices mismatch values count."
         
-        If Strings.Contains(format_string, "\\") Then _
+        If StringType.Contains(format_string, "\\") Then _
             format_string = Replace(format_string, "\\", Chr$(27))
     
         If matches.Count = 0 And format_string <> vbNullString And UBound(Values) = -1 Then
@@ -65,7 +65,7 @@ Public Function Format(format_string As String, ParamArray Values()) As String
             return_value = format_string
             GoTo checkEscapes
         ElseIf UBound(Values) = -1 And matches.Count > 0 Then
-            Error.RaiseArgumentEmptyError ERR_SOURCE, "Format specifier has no value."
+            Err.Raise ERR_SOURCE, "Format specifier has no value."
         End If
         
         return_value = format_string
@@ -85,7 +85,7 @@ Public Function Format(format_string As String, ParamArray Values()) As String
             
             'if specified index (0-based) > uniqueCount (1-based), something's wrong:
             If p > uniqueCount - 1 Then _
-                Error.RaiseInvalidFormatError ERR_SOURCE, "Format specifier index out of bounds."
+                Err.Raise ERR_SOURCE, "Format specifier index out of bounds."
             v = Values(p)
             
             'get the alignment specifier if it is specified:
@@ -96,7 +96,7 @@ Public Function Format(format_string As String, ParamArray Values()) As String
             
             'get the format specifier if it is specified:
             thisString = thisMatch.value
-            If Strings.Contains(thisString, ":") Then
+            If StringType.Contains(thisString, ":") Then
                 
                 Dim formatGroup As String, precisionSpecifier As Integer
                 Dim formatSpecifier As String, precisionString As String
@@ -188,21 +188,21 @@ NumberFormatSpecifiers:
                     
                     Dim eNotation As String, ePower As Integer, specifier As String
                     precisionSpecifier = IIf(CInt(precisionString) > 0, CInt(precisionString), _
-                        IIf(Strings.Contains(v, "."), Len(v) - InStr(1, v, "."), 0))
+                        IIf(StringType.Contains(v, "."), Len(v) - InStr(1, v, "."), 0))
                     
                     'track character case of formatSpecifier:
                     specifier = IIf(formatSpecifier = "G", "D", "d")
                     
                     If TypeName(Values(p)) = "Integer" Or TypeName(Values(p)) = "Long" Then
                         'Integer types: use {0:D} (recursive call):
-                        formattedValue = Strings.Format("{0:" & specifier & "}", Values(p))
+                        formattedValue = StringType.Format("{0:" & specifier & "}", Values(p))
                     
                     ElseIf TypeName(Values(p)) = "Double" Then
                         'Non-integer types: use {0:E}
                         specifier = IIf(formatSpecifier = "G", "E", "e")
                         
                         'evaluate the exponential notation value (recursive call):
-                        eNotation = Strings.Format("{0:" & specifier & "}", v)
+                        eNotation = StringType.Format("{0:" & specifier & "}", v)
                         
                         'get the power of eNotation:
                         ePower = Mid$(eNotation, InStr(1, UCase$(eNotation), "E-") + 1, Len(eNotation) - InStr(1, UCase$(eNotation), "E-"))
@@ -211,7 +211,7 @@ NumberFormatSpecifiers:
                             'use {0:F} when ePower > -5 and abs(ePower) < precisionSpecifier:
                             'evaluate the floating-point value (recursive call):
                              specifier = IIf(formatSpecifier = "G", "F", "f")
-                             formattedValue = Strings.Format("{0:" & formatSpecifier & _
+                             formattedValue = StringType.Format("{0:" & formatSpecifier & _
                                  IIf(precisionSpecifier <> 0, precisionString, vbNullString) & "}", Values(p))
                         Else
                             'fallback to {0:E} if previous rule didn't apply:
@@ -356,7 +356,7 @@ AlignFormattedValue:
             End If
             
             'Replace C# hex specifier with VB6 hex specifier:
-            If Strings.Contains(formattedValue, "0x") Then formattedValue = Replace$(formattedValue, "0x", "&H")
+            If StringType.Contains(formattedValue, "0x") Then formattedValue = Replace$(formattedValue, "0x", "&H")
             
             'replace all occurrences of placeholder {i} with their formatted values:
             return_value = Replace(return_value, thisString, formattedValue, Count:=1)
@@ -368,15 +368,15 @@ AlignFormattedValue:
         
 checkEscapes:
         'if there's no more backslashes, don't bother checking for the rest:
-        If Not Strings.Contains(return_value, "\") Then GoTo normalExit
+        If Not StringType.Contains(return_value, "\") Then GoTo normalExit
         
         Dim escape As EscapeSequence
         For i = 0 To escapes.Count - 1
             Set escape = escapes(CStr(i))
-            If Strings.Contains(return_value, escape.EscapeString) Then _
+            If StringType.Contains(return_value, escape.EscapeString) Then _
                 return_value = Replace(return_value, escape.EscapeString, escape.ReplacementString)
         
-            If Not Strings.Contains(return_value, "\") Then _
+            If Not StringType.Contains(return_value, "\") Then _
                 GoTo normalExit
         Next
         
@@ -399,7 +399,7 @@ checkEscapes:
         End If
         
         'if there's no more backslashes, don't bother checking for the rest:
-        If Not Strings.Contains("\", return_value) Then GoTo normalExit
+        If Not StringType.Contains("\", return_value) Then GoTo normalExit
         
         'replace "ASCII (hex)" escape sequence
         Set regex = New RegExp
@@ -419,7 +419,7 @@ checkEscapes:
         End If
 
 normalExit:
-    If Strings.Contains(return_value, Chr$(27)) Then return_value = Replace(return_value, Chr$(27), "\")
+    If StringType.Contains(return_value, Chr$(27)) Then return_value = Replace(return_value, Chr$(27), "\")
     Format = return_value
    
 End Function
@@ -558,3 +558,14 @@ Private Sub Class_Initialize()
     escapes.Add factory.Create("\r", Chr$(15)), "7"
     Set factory = Nothing
 End Sub
+
+Public Function Coalesce(ParamArray parms() As Variant) As Variant
+    Dim i As Integer, currentParm As Variant
+    For i = 0 To UBound(parms)
+        currentParm = parms(i)
+        Coalesce = currentParm
+        If Not IsNull(currentParm) Then
+            Exit Function
+        End If
+    Next
+End Function

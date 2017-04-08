@@ -110,12 +110,12 @@ Private Function ValidateItemType(value As Variant)
 End Function
 
 Private Sub RaiseErrorUnsafeType(member As String, suppliedType As String)
-    Err.Raise 13, Strings.Format("{0}.{1}", ToString, member), _
-                  Strings.Format("Type Mismatch. Expected: '{0}', '{1}' was supplied.", this.ItemTypeName, suppliedType)
+    Err.Raise 13, StringType.Format("{0}.{1}", ToString, member), _
+                  StringType.Format("Type Mismatch. Expected: '{0}', '{1}' was supplied.", this.ItemTypeName, suppliedType)
 End Sub
 
 Private Sub RaiseErrorMustImplementIComparable(member As String)
-    Err.Raise 5, Strings.Format("{0}.{1}", ToString, member), "Invalid operation: method requires a list of numeric, date or string values, or a list of objects implementing the IComparable interface."
+    Err.Raise 5, StringType.Format("{0}.{1}", ToString, member), "Invalid operation: method requires a list of numeric, date or string values, or a list of objects implementing the IComparable interface."
 End Sub
 
 Private Sub Class_Initialize()
@@ -385,11 +385,11 @@ Attribute IsTypeSafe.VB_Description = "Determines whether a value can be safely 
 
     'all other cases demand more processing:
     IsTypeSafe = result _
-        Or this.ItemTypeName = "Integer" And Strings.MatchesAny(TypeName(value), "Byte") _
-        Or this.ItemTypeName = "Long" And Strings.MatchesAny(TypeName(value), "Integer", "Byte") _
-        Or this.ItemTypeName = "Single" And Strings.MatchesAny(TypeName(value), "Long", "Integer", "Byte") _
-        Or this.ItemTypeName = "Double" And Strings.MatchesAny(TypeName(value), "Long", "Integer", "Byte", "Single") _
-        Or this.ItemTypeName = "Currency" And Strings.MatchesAny(TypeName(value), "Long", "Integer", "Byte", "Single", "Double")
+        Or this.ItemTypeName = "Integer" And StringType.MatchesAny(TypeName(value), "Byte") _
+        Or this.ItemTypeName = "Long" And StringType.MatchesAny(TypeName(value), "Integer", "Byte") _
+        Or this.ItemTypeName = "Single" And StringType.MatchesAny(TypeName(value), "Long", "Integer", "Byte") _
+        Or this.ItemTypeName = "Double" And StringType.MatchesAny(TypeName(value), "Long", "Integer", "Byte", "Single") _
+        Or this.ItemTypeName = "Currency" And StringType.MatchesAny(TypeName(value), "Long", "Integer", "Byte", "Single", "Double")
 
 End Function
 
@@ -661,6 +661,6 @@ Public Function ToString() As String
 Attribute ToString.VB_Description = "Returns a string that represents the current List object."
 'Returns a string that represents the current List object.
 
-    ToString = Strings.Format("{0}<{1}>", TypeName(Me), Coalesce(this.ItemTypeName, "Variant"))
+    ToString = StringType.Format("{0}<{1}>", TypeName(Me), StringType.Coalesce(this.ItemTypeName, "Variant"))
 
 End Function

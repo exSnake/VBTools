@@ -64,13 +64,13 @@ Attribute ExecuteWithParameters.VB_Description = "Executes specified parameteriz
 'Use this method over ExecuteStoredProcedure for more complex parameter scenarios, such as running a stored procedure with output parameters.
 
     'parameters is expected to be a List containing ADODB.Parameter objects: parameters.ToString = "List<Parameter>"
-    If Not parameters.IsTypeSafe(New ADODB.Parameter) Or parameters.ToString = "List<Variant>" Then Err.Raise vbObjectError + 2, "SqlCommand.ExecuteWithParameters", "Wrong list type. Argument 'parameters' must be a List<Parameter>."
+    If Not parameters.IsTypeSafe(New ADODB.parameter) Or parameters.ToString = "List<Variant>" Then Err.Raise vbObjectError + 2, "SqlCommand.ExecuteWithParameters", "Wrong list type. Argument 'parameters' must be a List<Parameter>."
     
     Dim emptyArray() As Variant
     Dim cmd As New ADODB.Command
     Set cmd = CreateCommand(connection, adCmdStoredProc, spName, emptyArray)
     
-    Dim param As ADODB.Parameter
+    Dim param As ADODB.parameter
     For Each param In parameters
         cmd.parameters.Append param
     Next
@@ -220,11 +220,11 @@ Private Function CreateCommand(connection As ADODB.connection, ByVal cmdType As 
 
 End Function
 
-Private Function ToSqlInputParameter(ByVal value As Variant) As ADODB.Parameter
+Private Function ToSqlInputParameter(ByVal value As Variant) As ADODB.parameter
     
     If IsObject(value) Then Err.Raise vbObjectError + 911, "SqlCommand.ToSqlInputParameter", "Invalid argument, parameter value cannot be an object."
     
-    Dim result As ADODB.Parameter
+    Dim result As ADODB.parameter
     Set result = CallByName(converter, "To" & TypeName(value) & "Parameter", VbMethod, value, ADODB.ParameterDirectionEnum.adParamInput)
     
     Set ToSqlInputParameter = result

@@ -12,7 +12,7 @@ Option Explicit
 Private Const CONNECTION_STRING As String = ""
 
 Private repositories As New Dictionary
-Private adoConnection As New ADODB.Connection
+Private adoConnection As New ADODB.connection
 
 Private disposed As Boolean
 

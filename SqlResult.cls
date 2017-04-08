@@ -86,7 +86,7 @@ Public Function Create(adoRecordset As ADODB.Recordset) As SqlResult
     While Not adoRecordset.BOF And Not adoRecordset.EOF
         
         For Each field In adoRecordset.fields
-            If grabFieldNames Then result.AddFieldName LCase$(Coalesce(field.name, vbNullString))
+            If grabFieldNames Then result.AddFieldName LCase$(StringType.Coalesce(field.name, vbNullString))
         Next
         
         result.AddValue rowFactory.Create(result, adoRecordset.fields)
@@ -98,4 +98,5 @@ Public Function Create(adoRecordset As ADODB.Recordset) As SqlResult
     Set Create = result
     
 End Function
+
 

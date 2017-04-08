@@ -152,9 +152,9 @@ Public Property Let StringMapping(ByVal value As ADODB.DataTypeEnum)
     mappings.StringMap = value
 End Property
 
-Public Function ToNamedParameter(ByVal name As String, ByVal value As Variant, ByVal direction As ADODB.ParameterDirectionEnum) As ADODB.Parameter
+Public Function ToNamedParameter(ByVal name As String, ByVal value As Variant, ByVal direction As ADODB.ParameterDirectionEnum) As ADODB.parameter
     
-    Dim result As ADODB.Parameter
+    Dim result As ADODB.parameter
     Set result = CallByName(Me, "To" & TypeName(value) & "Parameter", VbMethod, value, direction)
     
     result.name = name
@@ -163,7 +163,7 @@ Public Function ToNamedParameter(ByVal name As String, ByVal value As Variant, B
 End Function
 
 
-Public Function ToStringParameter(ByVal value As Variant, ByVal direction As ADODB.ParameterDirectionEnum) As ADODB.Parameter
+Public Function ToStringParameter(ByVal value As Variant, ByVal direction As ADODB.ParameterDirectionEnum) As ADODB.parameter
    
     Dim stringValue As String
     stringValue = CStr(value)
@@ -178,11 +178,11 @@ Public Function ToStringParameter(ByVal value As Variant, ByVal direction As ADO
     Dim stringLength As Long
     stringLength = Len(stringValue)
     
-    Dim result As New ADODB.Parameter
+    Dim result As New ADODB.parameter
     With result
         .Type = mappings.StringMap
         .direction = direction
-        .Size = IIf(stringLength = 0, 1, stringLength)
+        .size = IIf(stringLength = 0, 1, stringLength)
         .value = stringValue
     End With
     
@@ -190,14 +190,14 @@ Public Function ToStringParameter(ByVal value As Variant, ByVal direction As ADO
     
 End Function
 
-Public Function ToGuidParameter(ByVal value As String, ByVal direction As ADODB.ParameterDirectionEnum) As ADODB.Parameter
+Public Function ToGuidParameter(ByVal value As String, ByVal direction As ADODB.ParameterDirectionEnum) As ADODB.parameter
     
     If mappings.OptionAllStrings Then
         Set ToGuidParameter = ToStringParameter(value, direction)
         Exit Function
     End If
     
-    Dim result As New ADODB.Parameter
+    Dim result As New ADODB.parameter
     With result
         .Type = mappings.GuidMap
         .direction = direction
@@ -223,7 +223,7 @@ Private Function IsGuidString(ByVal value As String) As Boolean
     
 End Function
 
-Public Function ToIntegerParameter(ByVal value As Variant, ByVal direction As ADODB.ParameterDirectionEnum) As ADODB.Parameter
+Public Function ToIntegerParameter(ByVal value As Variant, ByVal direction As ADODB.ParameterDirectionEnum) As ADODB.parameter
     
     If mappings.OptionAllStrings Then
         Set ToIntegerParameter = ToStringParameter(value, direction)
@@ -233,7 +233,7 @@ Public Function ToIntegerParameter(ByVal value As Variant, ByVal direction As AD
     Dim integerValue As Long
     integerValue = CLng(value)
     
-    Dim result As New ADODB.Parameter
+    Dim result As New ADODB.parameter
     With result
         .Type = mappings.IntegerMap
         .direction = direction
@@ -244,7 +244,7 @@ Public Function ToIntegerParameter(ByVal value As Variant, ByVal direction As AD
     
 End Function
 
-Public Function ToByteParameter(ByVal value As Variant, ByVal direction As ADODB.ParameterDirectionEnum) As ADODB.Parameter
+Public Function ToByteParameter(ByVal value As Variant, ByVal direction As ADODB.ParameterDirectionEnum) As ADODB.parameter
     
     If mappings.OptionAllStrings Then
         Set ToByteParameter = ToStringParameter(value, direction)
@@ -254,7 +254,7 @@ Public Function ToByteParameter(ByVal value As Variant, ByVal direction As ADODB
     Dim byteValue As Byte
     byteValue = CByte(value)
     
-    Dim result As New ADODB.Parameter
+    Dim result As New ADODB.parameter
     With result
         .Type = mappings.ByteMap
         .direction = direction
@@ -265,7 +265,7 @@ Public Function ToByteParameter(ByVal value As Variant, ByVal direction As ADODB
     
 End Function
 
-Public Function ToLongParameter(ByVal value As Variant, ByVal direction As ADODB.ParameterDirectionEnum) As ADODB.Parameter
+Public Function ToLongParameter(ByVal value As Variant, ByVal direction As ADODB.ParameterDirectionEnum) As ADODB.parameter
     
     If mappings.OptionAllStrings Then
         Set ToLongParameter = ToStringParameter(value, direction)
@@ -275,7 +275,7 @@ Public Function ToLongParameter(ByVal value As Variant, ByVal direction As ADODB
     Dim longValue As Long
     longValue = CLng(value)
     
-    Dim result As New ADODB.Parameter
+    Dim result As New ADODB.parameter
     With result
         .Type = mappings.LongMap
         .direction = direction
@@ -286,7 +286,7 @@ Public Function ToLongParameter(ByVal value As Variant, ByVal direction As ADODB
     
 End Function
 
-Public Function ToDoubleParameter(ByVal value As Variant, ByVal direction As ADODB.ParameterDirectionEnum) As ADODB.Parameter
+Public Function ToDoubleParameter(ByVal value As Variant, ByVal direction As ADODB.ParameterDirectionEnum) As ADODB.parameter
     
     If mappings.OptionAllStrings Then
         Set ToDoubleParameter = ToStringParameter(value, direction)
@@ -296,7 +296,7 @@ Public Function ToDoubleParameter(ByVal value As Variant, ByVal direction As ADO
     Dim doubleValue As Double
     doubleValue = CDbl(value)
     
-    Dim result As New ADODB.Parameter
+    Dim result As New ADODB.parameter
     With result
         .Type = mappings.DoubleMap
         .direction = direction
@@ -307,7 +307,7 @@ Public Function ToDoubleParameter(ByVal value As Variant, ByVal direction As ADO
     
 End Function
 
-Public Function ToSingleParameter(ByVal value As Variant, ByVal direction As ADODB.ParameterDirectionEnum) As ADODB.Parameter
+Public Function ToSingleParameter(ByVal value As Variant, ByVal direction As ADODB.ParameterDirectionEnum) As ADODB.parameter
     
     If mappings.OptionAllStrings Then
         Set ToSingleParameter = ToStringParameter(value, direction)
@@ -317,7 +317,7 @@ Public Function ToSingleParameter(ByVal value As Variant, ByVal direction As ADO
     Dim singleValue As Single
     singleValue = CSng(value)
     
-    Dim result As New ADODB.Parameter
+    Dim result As New ADODB.parameter
     With result
         .Type = mappings.SingleMap
         .direction = direction
@@ -328,7 +328,7 @@ Public Function ToSingleParameter(ByVal value As Variant, ByVal direction As ADO
     
 End Function
 
-Public Function ToCurrencyParameter(ByVal value As Variant, ByVal direction As ADODB.ParameterDirectionEnum) As ADODB.Parameter
+Public Function ToCurrencyParameter(ByVal value As Variant, ByVal direction As ADODB.ParameterDirectionEnum) As ADODB.parameter
     
     If mappings.OptionAllStrings Then
         Set ToCurrencyParameter = ToStringParameter(value, direction)
@@ -338,7 +338,7 @@ Public Function ToCurrencyParameter(ByVal value As Variant, ByVal direction As A
     Dim currencyValue As Currency
     currencyValue = CCur(value)
     
-    Dim result As New ADODB.Parameter
+    Dim result As New ADODB.parameter
     With result
         .Type = mappings.CurrencyMap
         .direction = direction
@@ -349,7 +349,7 @@ Public Function ToCurrencyParameter(ByVal value As Variant, ByVal direction As A
     
 End Function
 
-Public Function ToBooleanParameter(ByVal value As Variant, ByVal direction As ADODB.ParameterDirectionEnum) As ADODB.Parameter
+Public Function ToBooleanParameter(ByVal value As Variant, ByVal direction As ADODB.ParameterDirectionEnum) As ADODB.parameter
 
     If mappings.OptionAllStrings Then
         Set ToBooleanParameter = ToStringParameter(value, direction)
@@ -359,7 +359,7 @@ Public Function ToBooleanParameter(ByVal value As Variant, ByVal direction As AD
     Dim boolValue As Boolean
     boolValue = CBool(value)
     
-    Dim result As New ADODB.Parameter
+    Dim result As New ADODB.parameter
     With result
         .Type = mappings.BooleanMap
         .direction = direction
@@ -370,7 +370,7 @@ Public Function ToBooleanParameter(ByVal value As Variant, ByVal direction As AD
     
 End Function
 
-Public Function ToDateParameter(ByVal value As Variant, ByVal direction As ADODB.ParameterDirectionEnum) As ADODB.Parameter
+Public Function ToDateParameter(ByVal value As Variant, ByVal direction As ADODB.ParameterDirectionEnum) As ADODB.parameter
 
     If mappings.OptionAllStrings Then
         Set ToDateParameter = ToStringParameter(Format(value, mappings.StringDateFormat), direction)
@@ -380,7 +380,7 @@ Public Function ToDateParameter(ByVal value As Variant, ByVal direction As ADODB
     Dim dateValue As Date
     dateValue = CDate(value)
     
-    Dim result As New ADODB.Parameter
+    Dim result As New ADODB.parameter
     With result
         .Type = mappings.DateMap
         .direction = direction
@@ -390,3 +390,5 @@ Public Function ToDateParameter(ByVal value As Variant, ByVal direction As ADODB
     Set ToDateParameter = result
     
 End Function
+
+

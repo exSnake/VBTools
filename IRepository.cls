@@ -9,7 +9,7 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-Public Sub SetConnection(ByRef value As ADODB.Connection)
+Public Sub SetConnection(ByRef value As ADODB.connection)
 End Sub
 
 Public Function GetById(ByVal id As Long) As SqlResultRow
@@ -36,6 +36,6 @@ End Sub
 Public Sub Update(ByVal id As Long, ByVal value As SqlResultRow)
 End Sub
 
-Public Function NewItem(ByVal Model As SqlResult, ByVal values As Dictionary) As SqlResultRow
+Public Function NewItem(ByVal Model As SqlResult, ByVal Values As Dictionary) As SqlResultRow
 End Function
 

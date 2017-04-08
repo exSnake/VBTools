@@ -15,11 +15,7 @@ End Property
 Public Property Set UnitOfWork(ByVal value As IUnitOfWork)
 End Property
 
-Public Property Get View() As IView
-End Property
 
-Public Property Set View(ByVal value As IView)
-End Property
 
 Public Sub Show()
 End Sub

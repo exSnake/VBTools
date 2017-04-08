@@ -71,9 +71,9 @@ Public Function Create(parent As SqlResult, fields As ADODB.fields) As SqlResult
     
     For Each field In fields
         If TypeName(field.value) = "String" Then
-            value = LTrim(RTrim(Coalesce(field.value, vbNullString)))
+            value = LTrim(RTrim(StringType.Coalesce(field.value, vbNullString)))
         Else
-            value = Coalesce(field.value, vbEmpty)
+            value = StringType.Coalesce(field.value, vbEmpty)
         End If
         result.AddValue value
     Next
